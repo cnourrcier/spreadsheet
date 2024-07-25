@@ -102,5 +102,5 @@ test('evalFormula evaluates a formula with cell references', () => {
     ];
     expect(evalFormula('C1', cells)).toBe('8');
     expect(evalFormula('A1', cells)).toBe('5'); // Edge case: direct reference
-    expect(() => evalFormula('D1', cells)).toThrow('Invalid cell reference'); // Edge case: nonexistent cell reference
+    expect(() => evalFormula('D1', cells)).toThrow('Invalid cell reference: D1'); // Edge case: nonexistent cell reference
 });

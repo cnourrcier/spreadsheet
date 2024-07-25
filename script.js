@@ -136,9 +136,12 @@ const applyFunction = (str) => {
         if (args.trim() === '') return spreadsheetFunctions[fn.toLowerCase()]([]);
         return spreadsheetFunctions[fn.toLowerCase()](toNumberList(args));
     };
-    return str2.replace(functionCall, (match, fn, args) =>
-        spreadsheetFunctions.hasOwnProperty(fn.toLowerCase()) ? apply(fn, args) : match
-    );
+    return str2.replace(functionCall, (match, fn, args) => {
+        if (!spreadsheetFunctions.hasOwnProperty(fn.toLowerCase())) {
+            throw new Error(`Unknown function: ${fn}`)
+        }
+        return apply(fn, args);
+    });
 };
 
 /**
@@ -148,7 +151,13 @@ const applyFunction = (str) => {
  * @returns {string} - The evaluated formula.
  */
 const evalFormula = (x, cells) => {
-    const idToText = (id) => cells.find(cell => cell.id === id)?.value || '';
+    const idToText = (id) => {
+        const cell = cells.find(cell => cell.id === id);
+        if (!cell) {
+            throw new Error(`Invalid cell reference: ${id}`);
+        }
+        return cell.value;
+    };
     const rangeRegex = /([A-J])([1-9][0-9]?):([A-J])([1-9][0-9]?)/gi;
     const rangeFromString = (num1, num2) => range(parseInt(num1), parseInt(num2));
     const elemValue = num => character => idToText(character + num);
@@ -158,7 +167,12 @@ const evalFormula = (x, cells) => {
         rangeFromString(num1, num2).map(addCharacters(char1)(char2)).join(',')
     );
     const cellRegex = /[A-J][1-9][0-9]?/gi;
-    const cellExpanded = rangeExpanded.replace(cellRegex, (match) => idToText(match.toUpperCase()));
+    let cellExpanded = rangeExpanded.replace(cellRegex, (match) => idToText(match.toUpperCase()));
+
+    // Repeatedly replace cell references until no more replacements are made
+    while (cellRegex.test(cellExpanded)) {
+        cellExpanded = cellExpanded.replace(cellRegex, (match) => idToText(match.toUpperCase()));
+    }
     const functionExpanded = applyFunction(cellExpanded);
     if (functionExpanded === x) throw new Error('Invalid cell reference');
     return functionExpanded;
