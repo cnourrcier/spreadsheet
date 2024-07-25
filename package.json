@@ -1,0 +1,16 @@
+{
+  "name": "spreadsheet",
+  "version": "1.0.0",
+  "description": "A JavaScript spreadsheet application project that parses and evaluates mathematical expressions, implements spreadsheet functions, handles cell references, creates interactive web interfaces, and dynamically updates the page based on user input.",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

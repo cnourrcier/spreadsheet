@@ -180,6 +180,23 @@ const update = (event) => {
     };
 };
 
+module.exports = {
+    infixToFunction,
+    infixEval,
+    highPrecedence,
+    isEven,
+    sum,
+    average,
+    median,
+    random,
+    range,
+    charRange,
+    spreadsheetFunctions,
+    applyFunction,
+    evalFormula
+};
+
+
 
 
 
